@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Pong</string>
+    <string name="title">PONG</string>
+    <string name="high_score_text">HIGHSCORE</string>
+    <string name="high_score">%d</string>
+    <string name="play_text">PLAY</string>
+    <string name="game_over_text">Your score is %d</string>
+    <string name="restart_button_text">RESTART</string>
+    <string name="menu_button_text">MENU</string>
+</resources>
