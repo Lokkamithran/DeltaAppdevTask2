@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var play: Button
     private val SHARED_PREF = "sharedPrefs"
     private val SCORE = "score"
     private var score: Int = 0
@@ -22,8 +21,14 @@ class MainActivity : AppCompatActivity() {
         loadData()
         scoreText.text = getString(R.string.high_score, score)
 
-        play = findViewById(R.id.play_button)
-        play.setOnClickListener {
+        val easyMode = findViewById<Button>(R.id.easy_mode)
+        val hardMode = findViewById<Button>(R.id.hard_mode)
+
+        easyMode.setOnClickListener {
+            val intent = Intent(this, SecondActivity::class.java)
+            startActivity(intent)
+        }
+        hardMode.setOnClickListener {
             val intent = Intent(this, SecondActivity::class.java)
             intent.putExtra("flag", 1)
             startActivity(intent)

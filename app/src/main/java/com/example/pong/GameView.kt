@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.media.AudioAttributes
+import android.media.SoundPool
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
@@ -20,12 +22,25 @@ class GameView(context: Context, attributes: AttributeSet): View(context, attrib
     private var touchX = 0f
 
     private var gameStatus = false
+    var hardMode = false
+
+    private val audioAttributes: AudioAttributes = AudioAttributes.Builder()
+    .setUsage(AudioAttributes.USAGE_GAME)
+    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+    .build()
+    private val sound: SoundPool = SoundPool.Builder()
+    .setMaxStreams(6)
+    .setAudioAttributes(audioAttributes)
+    .build()
+
+    private val sound1 = sound.load(this.context, R.raw.ball_sound_edited, 1)
+    private val sound2 = sound.load(this.context, R.raw.game_over_sound, 1)
 
     private val radius = 30f
     var circleX = 0f
     var circleY = 0f
-    private var dx = (3..10).random()
-    private var dy = sqrt((225-dx*dx).toDouble()).toInt()
+    private var dx = (3..10).random().toFloat()
+    private var dy = sqrt((225-dx*dx).toDouble()).toFloat()
     var score = 0
 
     private val paintBg = Paint().apply {
@@ -95,19 +110,30 @@ class GameView(context: Context, attributes: AttributeSet): View(context, attrib
             while(gameStatus){
                 circleX+=dx
                 circleY+=dy
+                if(hardMode){
+                    if(dx>0) dx+=0.002f
+                    else dx-=0.002f
+                    if(dy>0) dy+=0.002f
+                    else dy-=0.002f
+                }
                 when{
                     circleX<radius -> {circleX = radius
-                        dx *= -1}
+                        dx *= -1
+                        playSound(sound1)}
                     circleX>width - radius -> {circleX = width - radius
-                        dx *= -1}
+                        dx *= -1
+                        playSound(sound1)}
                     circleY<height/20f + 20f + radius -> {circleY = height/20f + 20f + radius
                         dy *= -1
-                        score+=2}
+                        score+=2
+                        playSound(sound1)}
                     circleY >= height - radius - playerHeight -> {if(circleX in playerX..playerX + playerWidth){
                         circleY = height - radius - playerHeight
                         dy *= -1
+                        playSound(sound1)
                     } else{
                         gameStatus = false
+                        playSound(sound2)
                         val intent = Intent(this@GameView.context, ThirdActivity::class.java)
                         intent.putExtra("flag2", score)
                         this@GameView.context.startActivity(intent)
@@ -117,5 +143,8 @@ class GameView(context: Context, attributes: AttributeSet): View(context, attrib
                 sleep(10)
             }
         }
+    }
+    fun playSound(i: Int){
+        sound.play(i, 1f, 1f, 0, 0, 1f)
     }
 }

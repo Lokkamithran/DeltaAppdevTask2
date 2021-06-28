@@ -20,15 +20,9 @@ class ThirdActivity : AppCompatActivity() {
 
         val flag = intent.getIntExtra("flag2", 0)
         val scoreText = findViewById<TextView>(R.id.game_over)
-        val restartButton = findViewById<Button>(R.id.restart_button)
         val menuButton = findViewById<Button>(R.id.menu_button)
 
         scoreText.text = getString(R.string.game_over_text, flag)
-        restartButton.setOnClickListener {
-            val intent = Intent(this, SecondActivity::class.java)
-            intent.putExtra("flag", 1)
-            startActivity(intent)
-        }
         menuButton.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)

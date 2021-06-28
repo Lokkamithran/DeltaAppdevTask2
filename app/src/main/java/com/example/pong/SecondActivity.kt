@@ -18,13 +18,12 @@ class SecondActivity : AppCompatActivity() {
 
         val pong = findViewById<GameView>(R.id.pong)
         val flag = intent.getIntExtra("flag", 0)
-        if(flag == 1){
-            pong.circleX = ((width/3)..(2*width/3)).random().toFloat()
-            pong.circleY = if((height/20 + 60)<height/2) ((height/20 + 60)..height/2).random().toFloat()
+
+        pong.circleX = ((width/3)..(2*width/3)).random().toFloat()
+        pong.circleY = if((height/20 + 60)<height/2) ((height/20 + 60)..height/2).random().toFloat()
             else (0..height/2).random().toFloat()
+        if(flag == 1) pong.hardMode = true
 
             pong.startGame()
-        }
-
     }
 }
