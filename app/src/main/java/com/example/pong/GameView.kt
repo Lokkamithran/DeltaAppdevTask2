@@ -44,7 +44,7 @@ class GameView(context: Context, attributes: AttributeSet): View(context, attrib
     private val paintLine = Paint().apply {
         color = ContextCompat.getColor(context, R.color.white)
         style = Paint.Style.FILL
-        strokeWidth = 10f
+        strokeWidth = 15f
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -90,16 +90,6 @@ class GameView(context: Context, attributes: AttributeSet): View(context, attrib
         GameThread().start()
     }
 
-    fun resetGame(){
-        dx = (4..11).random()
-        dy = sqrt((225-dx*dx).toDouble()).toInt()
-        gameStatus = false
-
-        val intent = Intent(this.context, ThirdActivity::class.java)
-        intent.putExtra("flag2", score)
-        this.context.startActivity(intent)
-    }
-
     inner class GameThread: Thread() {
         override fun run(){
             while(gameStatus){
@@ -116,7 +106,12 @@ class GameView(context: Context, attributes: AttributeSet): View(context, attrib
                     circleY >= height - radius - playerHeight -> {if(circleX in playerX..playerX + playerWidth){
                         circleY = height - radius - playerHeight
                         dy *= -1
-                    }else resetGame()}
+                    } else{
+                        gameStatus = false
+                        val intent = Intent(this@GameView.context, ThirdActivity::class.java)
+                        intent.putExtra("flag2", score)
+                        this@GameView.context.startActivity(intent)
+                    } }
                 }
                 postInvalidate()
                 sleep(10)
