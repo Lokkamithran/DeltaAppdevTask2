@@ -33,7 +33,6 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra("flag", 1)
             startActivity(intent)
         }
-
     }
 
     private fun loadData() {
