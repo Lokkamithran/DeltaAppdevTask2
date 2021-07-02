@@ -174,11 +174,17 @@ class GameView(context: Context, attributes: AttributeSet) : View(context, attri
         this.context.startActivity(intent)
     }
 
-    fun computersX() {
-        computerX = when {
-            (circleX - computerWidth / 2 <= 0f) -> 0f
-            (circleX + computerWidth / 2 >= width.toFloat()) -> width - computerWidth
-            else -> circleX - computerWidth / 2
+    fun computersX(computerHit: Int = 0) {
+        computerX = if(computerHit==0){
+            when {
+                (circleX - computerWidth / 2 <= 0f) -> 0f
+                (circleX + computerWidth / 2 >= width.toFloat()) -> width - computerWidth
+                else -> circleX - computerWidth / 2
+            }
+        }else when{
+            (computerX - dx<=0f) -> 0f
+            (computerX - dx + computerWidth>=width.toFloat()) -> width - computerWidth
+            else -> computerX - dx
         }
     }
 
@@ -192,14 +198,16 @@ class GameView(context: Context, attributes: AttributeSet) : View(context, attri
                 circleX += dx
                 circleY += dy
                 if (flag == 1) powerUpY += 5f
-                if (hardMode) {
-                    if (dx > 0) dx += 0.002f
-                    else dx -= 0.002f
-                    if (dy > 0) dy += 0.002f
-                    else dy -= 0.002f
-
-                    computersX()
-                } else if (easyModeVar > 0) computersX()
+                when{
+                    (hardMode) -> {
+                        if (dx > 0) dx += 0.002f
+                        else dx -= 0.002f
+                        if (dy > 0) dy += 0.002f
+                        else dy -= 0.002f
+                        computersX() }
+                    (easyModeVar > 0) -> computersX()
+                    else -> computersX(1)
+                }
                 when {
                     circleX < radius -> {
                         circleX = radius
@@ -217,8 +225,6 @@ class GameView(context: Context, attributes: AttributeSet) : View(context, attri
                             dy *= -1
                             computerScore += 2
                             playSound(sound1)
-                            if (easyModeVar > 0) easyModeVar -= 1
-                            else easyModeVar = (5..10).random()
                         } else gameOver()
                     }
                     circleY >= height - (radius + playerHeight + height / 20f + 20f) -> {
@@ -229,6 +235,8 @@ class GameView(context: Context, attributes: AttributeSet) : View(context, attri
                             playSound(sound1)
                             elongatePlayer--
                             if (elongatePlayer == 0) playerWidth -= 80f
+                            if (easyModeVar > 0) easyModeVar -= 1
+                            else easyModeVar = (5..10).random()
                         } else gameOver()
                     }
                 }
